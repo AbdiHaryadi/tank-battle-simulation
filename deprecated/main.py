@@ -299,6 +299,7 @@ def abdi_act_function(tank, frame, bullets, other_tanks):
         else:
             return random.choice(ACTION_LIST)
             
+
 def attacker_action(tank, frame, bullets, other_tanks, first_target=True):
     # Intinya dia selalu ingin menembak
     dont_stay = any(map(lambda b: (
@@ -571,11 +572,11 @@ def dodge_action(tank, frame, bullets, other_tanks, first_target=True):
 #current_tanks.append(own_tank)
 
 # Create random tanks
-while len(current_tanks) < 1:
+while len(current_tanks) < 2:
     x = random.randint(0, 19)
     y = random.randint(0, 14)
     if not any(map(lambda t: t.x == x and t.y == y, current_tanks)):
-        new_tank = Tank(canvas, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), x, y, dodge_action if len(current_tanks) % 2 == 0 else dodge_action)
+        new_tank = Tank(canvas, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), x, y, attacker_action if len(current_tanks) % 2 == 0 else attacker_action)
         current_tanks.append(new_tank)
 
 def update(tanks, frame=0, bullets=[]):
@@ -664,7 +665,7 @@ def update(tanks, frame=0, bullets=[]):
         b.destruct()
         
     # Add minimal bullet existence
-    p = exp(-frame / 1000) + (1 if len(tanks) <= 0 else 0)
+    p = exp(-frame / 1000) + (1 if len(tanks) <= 1 else 0)
     while p < random.random():
         bullet_added = False
         while not bullet_added:
