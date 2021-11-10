@@ -6,7 +6,7 @@ from Action import Action
 from Bullet import Bullet
 from Direction import Direction
 from TankPerception import TankPerception
-from TankBot import TankBot
+from SimpleTankBot import SimpleTankBot
 
 class Tank:
     TURRET_COORDINATES = {
@@ -22,7 +22,7 @@ class Tank:
         self.x = x
         self.y = y
         if bot == None:
-            self.bot = TankBot()
+            self.bot = SimpleTankBot()
         else:
             self.bot = bot
             

@@ -7,6 +7,8 @@ from Bullet import Bullet
 from Direction import Direction
 from GamePerception import GamePerception
 from Tank import Tank
+from SimpleTankBot import SimpleTankBot
+from MyTankBot import MyTankBot
 
 import time
 
@@ -18,6 +20,7 @@ class CommandLineApp():
         self.frame = 0
         
     def run(self):
+        """
         # Create random tanks
         while len(self.tanks) < 2:
             x = random.randrange(0, config.COL_COUNT)
@@ -30,12 +33,28 @@ class CommandLineApp():
                 )
                 new_tank = Tank(None, random_color, x, y)
                 self.tanks.append(new_tank)
+        """
         
-        while len(self.tanks) > 0:
+        t1 = Tank(None, (255, 0, 0), 0, 0, bot=MyTankBot())
+        t2 = Tank(None, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
+        self.tanks = [t1, t2]
+        
+        while len(self.tanks) > 1 or len(self.bullets) > 0:
             self.update()
             time.sleep(config.MS_PER_FRAME / 1000)
         
     def update(self):
+        # Render the game perception
+        print("Frame {}".format(self.frame))
+        GamePerception(
+            config.ROW_COUNT,
+            config.COL_COUNT,
+            self.frame,
+            None,
+            self.bullets,
+            self.tanks
+        ).render()
+        
         # Shuffle the tank for fair chance
         random.shuffle(self.tanks)
         
@@ -52,8 +71,6 @@ class CommandLineApp():
                 self.bullets,
                 [t2 for t2 in self.tanks if t2 != t] # other tanks
             )
-            print("Frame {}".format(self.frame))
-            gp.render()
             action = t.get_action(gp)
             
             if action is Action.MOVE_LEFT:
@@ -142,7 +159,7 @@ class CommandLineApp():
             self.bullets.remove(b)
             b.destruct()
         
-        if len(self.tanks) > 0:
+        if len(self.tanks) > 1:
             # Spawn random bullet, increasing rate each time
             p = 1 - exp(-self.frame * self.RANDOM_BULLET_RATE)
             while random.random() < p:
@@ -169,6 +186,7 @@ class CommandLineApp():
                         self.bullets.append(Bullet(None, x, y, direction))
                         bullet_added = True
                     # else: player exists there, so do not spawn bullet there.
+        
         
         self.frame += 1
 

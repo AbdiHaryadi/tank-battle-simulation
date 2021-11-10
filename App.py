@@ -8,6 +8,8 @@ from Bullet import Bullet
 from Direction import Direction
 from GamePerception import GamePerception
 from Tank import Tank
+from SimpleTankBot import SimpleTankBot
+from MyTankBot import MyTankBot
 
 class App(tkinter.Tk):
     RANDOM_BULLET_RATE = 0.001
@@ -47,7 +49,8 @@ class App(tkinter.Tk):
                         fill=self.BG_COLOR_2,
                         width=0
                     )
-                    
+
+        """
         # Create random tanks
         while len(self.tanks) < 2:
             x = random.randrange(0, config.COL_COUNT)
@@ -60,6 +63,11 @@ class App(tkinter.Tk):
                 )
                 new_tank = Tank(self.canvas, random_color, x, y)
                 self.tanks.append(new_tank)
+        """
+        
+        t1 = Tank(self.canvas, (255, 0, 0), 0, 0, bot=MyTankBot())
+        t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
+        self.tanks = [t1, t2]
 
         self.after(config.MS_DELAY, self.update)
         self.mainloop()
@@ -168,7 +176,7 @@ class App(tkinter.Tk):
             self.bullets.remove(b)
             b.destruct()
         
-        if len(self.tanks) > 0:
+        if len(self.tanks) > 1:
             # Spawn random bullet, increasing rate each time
             p = 1 - exp(-self.frame * self.RANDOM_BULLET_RATE)
             while random.random() < p:

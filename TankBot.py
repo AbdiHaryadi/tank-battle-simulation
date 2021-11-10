@@ -1,4 +1,5 @@
 from Action import Action
+from Direction import Direction
 import random
 
 class TankBot:
@@ -6,7 +7,4 @@ class TankBot:
         pass
         
     def get_action(self, gp):
-        if gp.frame % 4 == 0:
-            return random.choice(list(Action))
-        else:
-            return Action.DO_NOTHING
+        raise NotImplementedError

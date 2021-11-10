@@ -18,7 +18,7 @@ class GamePerception:
         self.row_count = row_count
         self.col_count = col_count
         self.frame = frame
-        self.player_tank = TankPerception(player_tank)
+        self.player_tank = TankPerception(player_tank) if player_tank != None else None
         self.bullets = [BulletPerception(b) for b in bullets]
         self.other_tanks = [TankPerception(t) for t in other_tanks]
         
@@ -32,7 +32,9 @@ class GamePerception:
     def render(self):
         # Print game perception as a display in command line
         print("#" * (self.col_count + 2))
-        objects = self.bullets + self.other_tanks + [self.player_tank]
+        objects = self.bullets + self.other_tanks
+        if self.player_tank != None:
+            objects += [self.player_tank]
         objects.sort(key=lambda o: o.y * self.col_count + o.x)
         
         i = 0 # object index
