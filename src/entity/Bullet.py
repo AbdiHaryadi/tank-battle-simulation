@@ -7,12 +7,13 @@ class Bullet:
     """
     Class for bullet.
     """
-    def __init__(self, cv, x, y, direction, color=(255, 127, 0)):
+    def __init__(self, cv, x, y, direction, team_id=None, color=(255, 127, 0)):
         self.cv = cv
         self.color = color
         self.x = x
         self.y = y
         self.direction = direction
+        self.team_id = team_id
         if self.cv != None:
             if (direction is Direction.LEFT) or (direction is Direction.RIGHT):
                 self.bullet = self.cv.create_rectangle(

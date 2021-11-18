@@ -17,9 +17,9 @@ class App(tkinter.Tk):
     """
     RANDOM_BULLET_RATE = 0.001
     BG_COLOR_1 = "#d0e19c"
-    BG_COLOR_2 = "#a5c54e"
+    BG_COLOR_2 = "#b5d55e"
 
-    def __init__(self):
+    def __init__(self, mode="1v1"):
         super().__init__()
         self.title("AI Simulation")
         self.canvas = tkinter.Canvas(
@@ -31,6 +31,7 @@ class App(tkinter.Tk):
         self.tanks = []
         self.bullets = []
         self.frame = 0
+        self.mode = mode
         
     def run(self):
         # Create a checkerboard background
@@ -68,12 +69,23 @@ class App(tkinter.Tk):
                 self.tanks.append(new_tank)
         """
         
-        #######
-        # Put your bot here!
-        t1 = Tank(self.canvas, (255, 0, 0), 0, 0, bot=MyTankBot())
-        t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
-        self.tanks = [t1, t2]
-        #######
+        if self.mode == "1v1":
+            #######
+            # Put your bot here!
+            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
+            t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
+            self.tanks = [t1, t2]
+            #######
+        elif self.mode == "3v3":
+            tr1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
+            tr2 = Tank(self.canvas, (255, 127, 0), 0, (config.ROW_COUNT - 1) // 2, "RED TEAM", bot=SimpleTankBot())
+            tr3 = Tank(self.canvas, (255, 0, 127), 0, config.ROW_COUNT - 1, "RED TEAM", bot=SimpleTankBot())
+            tb1 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, 0, "BLUE TEAM", bot=SimpleTankBot())
+            tb2 = Tank(self.canvas, (0, 127, 255), config.COL_COUNT - 1, (config.ROW_COUNT - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
+            tb3 = Tank(self.canvas, (63, 127, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
+            self.tanks = [tr1, tr2, tr3, tb1, tb2, tb3]
+        else:
+            raise ValueError("Mode not supported: {}".format(self.mode))
 
         self.after(config.MS_DELAY, self.update)
         self.mainloop()
@@ -134,8 +146,11 @@ class App(tkinter.Tk):
             # Assume one bullet for one tank
             destroyed_tank = None
             for t in self.tanks:
-                if same_pos(t.x, t.y, b.x, b.y) and t.direction is b.direction.inverse():
-                    destroyed_tank = t
+                if (same_pos(t.x, t.y, b.x, b.y)
+                        and t.direction is b.direction.inverse()):
+                    if t.team_id != b.team_id:
+                        destroyed_tank = t
+                    # else: it is a friendly fire, tank does not destroyed
                     removed_bullets.append(b)
                     
                     # We have got the destroyed tank, go to next step
@@ -166,7 +181,9 @@ class App(tkinter.Tk):
             destroyed_tank = None
             for t in self.tanks:
                 if t.x == b.x and t.y == b.y:
-                    destroyed_tank = t
+                    if t.team_id != b.team_id:
+                        destroyed_tank = t
+                    # else: it is a friendly fire, tank does not destroyed
                     removed_bullets.append(b)
                     
                     # We have got the destroyed tank, go to next step
@@ -182,7 +199,7 @@ class App(tkinter.Tk):
             self.bullets.remove(b)
             b.destruct()
         
-        if len(self.tanks) > 1:
+        if len(set(map(lambda t: t.team_id, self.tanks))) > 1:
             # Spawn random bullet, increasing rate each time
             p = 1 - exp(-self.frame * self.RANDOM_BULLET_RATE)
             while random.random() < p:
@@ -206,7 +223,7 @@ class App(tkinter.Tk):
                         raise ValueError
                     
                     if not any(list(map(lambda t: t.x == x and t.y == y, self.tanks))):
-                        self.bullets.append(Bullet(self.canvas, x, y, direction))
+                        self.bullets.append(Bullet(self.canvas, x, y, direction, color=(71, 63, 63)))
                         bullet_added = True
                     # else: player exists there, so do not spawn bullet there.
         

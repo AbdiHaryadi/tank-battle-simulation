@@ -16,11 +16,12 @@ class Tank:
         Direction.DOWN: (12, 16, 20, 28)
     }
 
-    def __init__(self, cv, color, x, y, bot=None):
+    def __init__(self, cv, color, x, y, team_id, bot=None):
         self.cv = cv
         self.color = color
         self.x = x
         self.y = y
+        self.team_id = team_id
         if bot == None:
             self.bot = SimpleTankBot()
         else:
@@ -136,7 +137,7 @@ class Tank:
         """
         self.turn_left(update=False)
         self.update()
-        return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT)
+        return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT, self.team_id, color=self.color)
             
     def shoot_right(self):
         """
@@ -144,7 +145,7 @@ class Tank:
         """
         self.turn_right(update=False)
         self.update()
-        return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT)
+        return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT, self.team_id, color=self.color)
         
     def shoot_up(self):
         """
@@ -152,7 +153,7 @@ class Tank:
         """
         self.turn_up(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y - 1, Direction.UP)
+        return Bullet(self.cv, self.x, self.y - 1, Direction.UP, self.team_id, color=self.color)
         
     def shoot_down(self):
         """
@@ -160,7 +161,7 @@ class Tank:
         """
         self.turn_down(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN)
+        return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN, self.team_id, color=self.color)
     
     # Turn method (helper)
     def turn_left(self, update=True):
