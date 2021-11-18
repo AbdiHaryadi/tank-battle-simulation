@@ -72,7 +72,7 @@ class App(tkinter.Tk):
         if self.mode == "1v1":
             #######
             # Put your bot here!
-            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
+            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=MyTankBot())
             t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
             self.tanks = [t1, t2]
             #######

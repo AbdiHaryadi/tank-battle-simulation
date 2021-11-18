@@ -14,17 +14,20 @@ Go to te root of this program, and run this command:
 py main.py
 ```
 
-It will shows two tanks battle to survive. It's not interesting yet, by the way.
+You will see two tanks fight each other, but just for survive. For 3v3 match, run this command:
+```
+py main.py 3v3
+```
 
 ## Now what?
-To make it interesting, try to implement your own bot! Implement it by create a new class inherits from `TankBot` at `src/bot/`, then import your bot to `src/App.py`. You can check `src/bot/SimpleTankBot.py` as an example.
+To make it more interesting, try to implement your own bot! Implement it by create a new class inherits from `TankBot` at `src/bot/`, then import your bot to `src/App.py`. You can check `src/bot/SimpleTankBot.py` as an example.
 
 To import, open `src/App.py`, then edit from this:
 ```
 #######
 # Put your bot here!
-t1 = Tank(self.canvas, (255, 0, 0), 0, 0, bot=MyTankBot()) # <- Pay attention to this line.
-t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
+t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=MyTankBot()) # <- Pay attention to this line.
+t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
 self.tanks = [t1, t2]
 #######
 ```
@@ -33,8 +36,8 @@ to this:
 ```
 #######
 # Put your bot here!
-t1 = Tank(self.canvas, (255, 0, 0), 0, 0, bot=YourTankBotClassName()) # <- Pay attention to this line.
-t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
+t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=YourTankBotClassName()) # <- Pay attention to this line.
+t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
 self.tanks = [t1, t2]
 #######
 ```
@@ -47,6 +50,7 @@ t = Tank(
    (<red:0-255>, <green:0-255>, <blue:0-255>),
    <x-pos>,
    <y-pos>,
+   <team-id>,
    bot=<class-name-of-your-bot>()
 )
 ```
