@@ -68,9 +68,12 @@ class App(tkinter.Tk):
                 self.tanks.append(new_tank)
         """
         
+        #######
+        # Put your bot here!
         t1 = Tank(self.canvas, (255, 0, 0), 0, 0, bot=MyTankBot())
         t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, bot=SimpleTankBot())
         self.tanks = [t1, t2]
+        #######
 
         self.after(config.MS_DELAY, self.update)
         self.mainloop()
