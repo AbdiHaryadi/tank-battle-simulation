@@ -1,9 +1,12 @@
-import config
-from utility import color_hex
-from Direction import Direction
-from BulletPerception import BulletPerception
+import src.config as config
+from src.enum.Direction import Direction
+from src.perception.BulletPerception import BulletPerception
+from src.utility import color_hex
 
 class Bullet:
+    """
+    Class for bullet.
+    """
     def __init__(self, cv, x, y, direction, color=(255, 127, 0)):
         self.cv = cv
         self.color = color
@@ -34,12 +37,18 @@ class Bullet:
             self.bullet = None
                 
     def move(self):
+        """
+        Move one step to its direction.
+        """
         dx, dy = self.direction.norm_vector()
         self.x += dx
         self.y += dy
         self.update()
         
     def update(self):
+        """
+        Update canvas object of bullet.
+        """
         if self.cv != None:
             if (self.direction is Direction.LEFT) or (self.direction is Direction.RIGHT):
                 self.cv.coords(
@@ -59,8 +68,14 @@ class Bullet:
                 )
             
     def destruct(self):
+        """
+        Visually destruct the bullet.
+        """
         if self.cv != None:
             self.cv.delete(self.bullet)
         
     def get_perception(self):
+        """
+        Get perception of bullet.
+        """
         return BulletPerception(self)

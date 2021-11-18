@@ -1,10 +1,18 @@
-from TankBot import TankBot
-from Action import Action
-from Direction import Direction
 import random
 
-# This is example how to create your bot
+from src.bot.TankBot import TankBot
+from src.enum.Action import Action
+from src.enum.Direction import Direction
+
 class SimpleTankBot(TankBot):
+    """
+    SimpleTankBot is an example for TankBot implementation.
+    This bot just try to avoid bullets which approaching to the tank
+    by moving orthogonally to the direction of bullet, randomly.
+    If there is no approaching bullet, TankBot will return random action
+    if frame can divided by four. If not, TankBot will return do-nothing
+    action.
+    """
     def __init__(self):
         super().__init__()
         

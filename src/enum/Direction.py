@@ -1,12 +1,18 @@
 from enum import Enum, auto
 
 class Direction(Enum):
+    """
+    Enumeration type of direction.
+    """
     LEFT = auto()
     RIGHT = auto()
     UP = auto()
     DOWN = auto()
     
     def inverse(self):
+        """
+        Return inverse of the direction.
+        """
         if self is Direction.LEFT:
             return Direction.RIGHT
             
@@ -20,6 +26,10 @@ class Direction(Enum):
             return Direction.UP
             
     def norm_vector(self):
+        """
+        Return vector with form of tuple (x, y).
+        Positive-x goes right and positive-y goes down.
+        """
         # Return normal vector relative to the coordinate of window
         if self is Direction.LEFT:
             return (-1, 0)

@@ -1,6 +1,9 @@
 from enum import Enum, auto
 
 class Action(Enum):
+    """
+    Enumeration type of action.
+    """
     MOVE_LEFT = auto()
     MOVE_RIGHT = auto()
     MOVE_UP = auto()

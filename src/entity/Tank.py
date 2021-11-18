@@ -1,14 +1,14 @@
-import random
-
-import config
-from utility import color_hex, to_half_dark
-from Action import Action
-from Bullet import Bullet
-from Direction import Direction
-from TankPerception import TankPerception
-from SimpleTankBot import SimpleTankBot
+from src.bot.SimpleTankBot import SimpleTankBot
+import src.config as config
+from src.entity.Bullet import Bullet
+from src.enum.Direction import Direction
+from src.perception.TankPerception import TankPerception
+from src.utility import color_hex, to_half_dark
 
 class Tank:
+    """
+    Class for tank.
+    """
     TURRET_COORDINATES = {
         Direction.LEFT: (4, 12, 16, 20),
         Direction.RIGHT: (16, 12, 28, 20),
@@ -52,14 +52,23 @@ class Tank:
             self.turret = None
         
     def destruct(self):
+        """
+        Visually destruct the tank.
+        """
         if self.cv != None:
             self.cv.delete(self.body)
             self.cv.delete(self.turret)
     
     def get_action(self, game_perception):
+        """
+        Get action from bot.
+        """
         return self.bot.get_action(game_perception)
                 
     def update(self):
+        """
+        Update canvas object of tank.
+        """
         if self.cv != None:
             self.cv.coords(
                 self.body,
@@ -79,70 +88,109 @@ class Tank:
             )
         
     def get_perception(self):
+        """
+        Get perception of tank.
+        """
         return TankPerception(self)
     
     # Move method
     def move_left(self):
+        """
+        Move one tile to left (west). Does not move if it hits wall.
+        """
         self.turn_left(update=False)
         if self.x > 0:
             self.x -= 1
         self.update()
         
     def move_right(self):
+        """
+        Move one tile to right (east). Does not move if it hits wall.
+        """
         self.turn_right(update=False)
         if self.x < config.COL_COUNT - 1:
             self.x += 1
         self.update()
         
     def move_up(self):
+        """
+        Move one tile to up (north). Does not move if it hits wall.
+        """
         self.turn_up(update=False)
         if self.y > 0:
             self.y -= 1
         self.update()
         
     def move_down(self):
+        """
+        Move one tile to down (south). Does not move if it hits wall.
+        """
         self.turn_down(update=False)
         if self.y < config.ROW_COUNT - 1:
             self.y += 1
         self.update()
         
     def shoot_left(self):
+        """
+        Spawn and return one bullet to left (west) direction.
+        """
         self.turn_left(update=False)
         self.update()
         return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT)
             
     def shoot_right(self):
+        """
+        Spawn and return one bullet to right (east) direction.
+        """
         self.turn_right(update=False)
         self.update()
         return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT)
         
     def shoot_up(self):
+        """
+        Spawn and return one bullet to up (north) direction.
+        """
         self.turn_up(update=False)
         self.update()
         return Bullet(self.cv, self.x, self.y - 1, Direction.UP)
         
     def shoot_down(self):
+        """
+        Spawn and return one bullet to down (south) direction.
+        """
         self.turn_down(update=False)
         self.update()
         return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN)
     
     # Turn method (helper)
     def turn_left(self, update=True):
+        """
+        Visually turn tank to left (west).
+        """
         self.direction = Direction.LEFT
         if update:
             self.update()
     
     def turn_right(self, update=True):
+        """
+        Visually turn tank to right (east).
+        """
         self.direction = Direction.RIGHT
         if update:
             self.update()
         
     def turn_up(self, update=True):
+        """
+        Visually turn tank to up (north).
+        """
         self.direction = Direction.UP
         if update:
             self.update()
         
     def turn_down(self, update=True):
+        """
+        Visually turn tank to down (south).
+        """
         self.direction = Direction.DOWN
         if update:
             self.update()

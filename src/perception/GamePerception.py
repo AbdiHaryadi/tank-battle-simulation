@@ -1,19 +1,24 @@
-from BulletPerception import BulletPerception
-from TankPerception import TankPerception
-from Direction import Direction
+from src.enum.Direction import Direction
+from src.perception.BulletPerception import BulletPerception
+from src.perception.TankPerception import TankPerception
 
 class GamePerception:
+    """
+    Perception class of game.
+    """
     def __init__(self, row_count, col_count, frame, player_tank, bullets,
             other_tanks):
-        # row_count: number of row in game (valid row: 0..(row_count - 1))
-        # col_count: number of column in game (valid column: 0..(row_count - 1))
-        # frame: number of current frame, used as time
-        # player_tank: your own Tank
-        # bullets: list of all Bullet objects
-        # other_tanks: list of all Tank objects not include your Tank
+        """
+        row_count: number of row in game (valid row: 0..(row_count - 1))
+        col_count: number of column in game (valid column: 0..(row_count - 1))
+        frame: number of current frame, used as time
+        player_tank: your own Tank
+        bullets: list of all Bullet objects
+        other_tanks: list of all Tank objects not include your Tank
         
-        # first row is on the top side (so it is top to bottom)
-        # first column is on the left side (so it is left to right)
+        first row is on the top side (so it is top to bottom)
+        first column is on the left side (so it is left to right)
+        """
         
         self.row_count = row_count
         self.col_count = col_count
@@ -30,7 +35,9 @@ class GamePerception:
         )
         
     def render(self):
-        # Print game perception as a display in command line
+        """
+        Print game perception as a display in command line.
+        """
         print("#" * (self.col_count + 2))
         objects = self.bullets + self.other_tanks
         if self.player_tank != None:

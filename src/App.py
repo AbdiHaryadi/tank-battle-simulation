@@ -2,16 +2,19 @@ import tkinter
 import random
 from math import exp
 
-import config
-from Action import Action
-from Bullet import Bullet
-from Direction import Direction
-from GamePerception import GamePerception
-from Tank import Tank
-from SimpleTankBot import SimpleTankBot
-from MyTankBot import MyTankBot
+from src.bot.SimpleTankBot import SimpleTankBot
+from src.bot.MyTankBot import MyTankBot
+import src.config as config
+from src.entity.Bullet import Bullet
+from src.entity.Tank import Tank
+from src.enum.Action import Action
+from src.enum.Direction import Direction
+from src.perception.GamePerception import GamePerception
 
 class App(tkinter.Tk):
+    """
+    Class for main application.
+    """
     RANDOM_BULLET_RATE = 0.001
     BG_COLOR_1 = "#d0e19c"
     BG_COLOR_2 = "#a5c54e"

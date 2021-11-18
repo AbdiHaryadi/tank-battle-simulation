@@ -1,7 +1,8 @@
-from TankBot import TankBot
-from Action import Action
-from Direction import Direction
 import random
+
+from src.bot.TankBot import TankBot
+from src.enum.Action import Action
+from src.enum.Direction import Direction
 
 class MyTankBot(TankBot):
     def __init__(self):
