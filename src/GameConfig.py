@@ -1,4 +1,4 @@
-class DisplayConfig:
+class GameConfig:
     def __init__(self, **kwargs):
         for arg, value in kwargs.items():
             print(arg, value)
