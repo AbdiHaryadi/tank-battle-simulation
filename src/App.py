@@ -4,7 +4,6 @@ from math import exp
 
 from src.bot.SimpleTankBot import SimpleTankBot
 from src.bot.MyTankBot import MyTankBot
-import src.config as config
 from src.entity.Bullet import Bullet
 from src.entity.Tank import Tank
 from src.enum.Action import Action
@@ -28,20 +27,9 @@ class App(tkinter.Tk):
         self.frame = 0
         self.mode = mode
         
-        """
-        self.game_config = game_config
-        
-        self.window_width: 640
-        self.window_height: 480
-        self.row_count: 15
-        col_count: 20
-        frame_rate: 20
-        delay_before_start: 3
-        """
-        
     def run(self):
-        window_width = self.game_config.window_width
-        window_height = self.game_config.window_height
+        window_width = self.game_config["window_width"]
+        window_height = self.game_config["window_height"]
     
         self.canvas = tkinter.Canvas(
             self,
@@ -58,8 +46,8 @@ class App(tkinter.Tk):
             width=0                        # no border
         )
         
-        row_count = self.game_config.row_count
-        col_count = self.game_config.col_count
+        row_count = self.game_config["row_count"]
+        col_count = self.game_config["col_count"]
         
         tile_width = window_width / col_count
         tile_height = window_height / row_count
@@ -75,15 +63,12 @@ class App(tkinter.Tk):
                         fill=self.BG_COLOR_2,
                         width=0
                     )
-                    
-        input("So far so good.")
-        raise
 
         """
         # Create random tanks
         while len(self.tanks) < 2:
-            x = random.randrange(0, config.COL_COUNT)
-            y = random.randrange(0, config.ROW_COUNT)
+            x = random.randrange(0, col_count)
+            y = random.randrange(0, row_count)
             if not any(map(lambda t: t.x == x and t.y == y, self.tanks)):
                 random_color = (
                     random.randint(0, 255),
@@ -94,30 +79,50 @@ class App(tkinter.Tk):
                 self.tanks.append(new_tank)
         """
         
+        # For teams first, self.mode is ignored right now
+        for team in self.game_config["teams"]:
+            for tank in team["tanks"]:
+                self.tanks.append(Tank(
+                    self.canvas,
+                    tank["color"],
+                    *tank["initial_position"],
+                    team["name"],
+                    bot=SimpleTankBot(), # Test
+                    game_config=self.game_config
+                ))
+                
+        #input("So far so good.")
+        #raise
+        
+        """
         if self.mode == "1v1":
             #######
             # Put your bot here!
             t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
-            t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
+            t2 = Tank(self.canvas, (0, 0, 255), col_count - 1, row_count - 1, "BLUE TEAM", bot=SimpleTankBot())
             self.tanks = [t1, t2]
             #######
         elif self.mode == "3v3":
             tr1 = Tank(self.canvas, (255, 0, 0), 1, 0, "RED TEAM", bot=SimpleTankBot())
-            tr2 = Tank(self.canvas, (255, 127, 0), 1, (config.ROW_COUNT - 1) // 2, "RED TEAM", bot=SimpleTankBot())
-            tr3 = Tank(self.canvas, (255, 0, 127), 1, config.ROW_COUNT - 1, "RED TEAM", bot=SimpleTankBot())
-            tb1 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 2, 0, "BLUE TEAM", bot=SimpleTankBot())
-            tb2 = Tank(self.canvas, (0, 127, 255), config.COL_COUNT - 2, (config.ROW_COUNT - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
-            tb3 = Tank(self.canvas, (63, 127, 255), config.COL_COUNT - 2, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
+            tr2 = Tank(self.canvas, (255, 127, 0), 1, (row_count - 1) // 2, "RED TEAM", bot=SimpleTankBot())
+            tr3 = Tank(self.canvas, (255, 0, 127), 1, row_count - 1, "RED TEAM", bot=SimpleTankBot())
+            tb1 = Tank(self.canvas, (0, 0, 255), col_count - 2, 0, "BLUE TEAM", bot=SimpleTankBot())
+            tb2 = Tank(self.canvas, (0, 127, 255), col_count - 2, (row_count - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
+            tb3 = Tank(self.canvas, (63, 127, 255), col_count - 2, row_count - 1, "BLUE TEAM", bot=SimpleTankBot())
             self.tanks = [tr1, tr2, tr3, tb1, tb2, tb3]
         else:
             raise ValueError("Mode not supported: {}".format(self.mode))
+        """
 
-        self.after(config.MS_DELAY, self.update)
+        self.after(self.game_config["delay_before_start"] * 1000, self.update)
         self.mainloop()
         
     def update(self):
         # Shuffle the tank for fair chance
         random.shuffle(self.tanks)
+        
+        row_count = self.game_config["row_count"]
+        col_count = self.game_config["col_count"]
         
         # Get action of every tanks
         new_bullets = []
@@ -125,8 +130,8 @@ class App(tkinter.Tk):
         for t in self.tanks:
             # Get action; dictionaries are used so action cannot change the state of tanks and bullets
             action = t.get_action(GamePerception(
-                config.ROW_COUNT,
-                config.COL_COUNT,
+                row_count,
+                col_count,
                 self.frame,
                 t,
                 self.bullets,
@@ -196,7 +201,7 @@ class App(tkinter.Tk):
         
         # Remove the bullet which is out of bound
         for b in self.bullets:
-            if not (b.x >= 0 and b.x < config.COL_COUNT and b.y >= 0 and b.y < config.ROW_COUNT):
+            if not (b.x >= 0 and b.x < col_count and b.y >= 0 and b.y < row_count):
                 removed_bullets.append(b)
         
         # Destroy the tank which get hitted after all old bullet move
@@ -232,28 +237,29 @@ class App(tkinter.Tk):
                 while not bullet_added:
                     direction = random.choice(list(Direction))
                     if direction == Direction.LEFT:
-                        x = config.COL_COUNT - 1
-                        y = random.randrange(0, config.ROW_COUNT)
+                        x = col_count - 1
+                        y = random.randrange(0, row_count)
                     elif direction == Direction.RIGHT:
                         x = 0
-                        y = random.randrange(0, config.ROW_COUNT)
+                        y = random.randrange(0, row_count)
                     elif direction == Direction.UP:
-                        x = random.randrange(0, config.COL_COUNT)
-                        y = config.ROW_COUNT - 1
+                        x = random.randrange(0, col_count)
+                        y = row_count - 1
                     elif direction == Direction.DOWN:
-                        x = random.randrange(0, config.COL_COUNT)
+                        x = random.randrange(0, col_count)
                         y = 0
                     else:
                         print(direction, "what?")
                         raise ValueError
                     
                     if not any(list(map(lambda t: t.x == x and t.y == y, self.tanks))):
-                        self.bullets.append(Bullet(self.canvas, x, y, direction, color=(71, 63, 63)))
+                        self.bullets.append(Bullet(self.canvas, x, y, direction, color=(71, 63, 63),
+                            game_config=self.game_config))
                         bullet_added = True
                     # else: player exists there, so do not spawn bullet there.
         
         self.frame += 1
-        self.after(config.MS_PER_FRAME, self.update)
+        self.after(1000 // self.game_config["frame_rate"], self.update)
 
 if __name__ == "__main__":
     app = App()

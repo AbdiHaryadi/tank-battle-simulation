@@ -1,5 +1,4 @@
 from src.bot.SimpleTankBot import SimpleTankBot
-import src.config as config
 from src.entity.Bullet import Bullet
 from src.enum.Direction import Direction
 from src.perception.TankPerception import TankPerception
@@ -16,7 +15,8 @@ class Tank:
         Direction.DOWN: (12, 16, 20, 28)
     }
 
-    def __init__(self, cv, color, x, y, team_id, bot=None):
+    def __init__(self, cv, color, x, y, team_id, bot=None,
+            game_config=None):
         self.cv = cv
         self.color = color
         self.x = x
@@ -28,29 +28,47 @@ class Tank:
             self.bot = bot
             
         self.direction = Direction.RIGHT
+        self.game_config = game_config
+        
+        self.game_row_count = game_config["row_count"]
+        self.game_col_count = game_config["col_count"]
+        
+        self.game_tile_width = game_config["window_width"] / self.game_col_count
+        self.game_tile_height = game_config["window_height"] / self.game_row_count
         
         if self.cv != None:
             self.body = self.cv.create_rectangle(
-                x * config.TILE_WIDTH + 8,
-                y * config.TILE_HEIGHT + 8,
-                x * config.TILE_WIDTH + 24,
-                y * config.TILE_HEIGHT + 24,
+                *self.get_body_coordinates(),
                 fill=color_hex(*color),
                 width=0
             )
             
             x1, y1, x2, y2 = self.TURRET_COORDINATES[self.direction]
             self.turret = self.cv.create_rectangle(
-                x * config.TILE_WIDTH + x1,
-                y * config.TILE_HEIGHT + y1,
-                x * config.TILE_WIDTH + x2,
-                y * config.TILE_HEIGHT + y2,
+                *self.get_turret_coordinates(),
                 fill=color_hex(*to_half_dark(color)),
                 width=0
             )
         else:
             self.body = None
             self.turret = None
+    
+    def get_body_coordinates(self):
+        return (
+            self.x * self.game_tile_width + 8,
+            self.y * self.game_tile_height + 8,
+            self.x * self.game_tile_width + 24,
+            self.y * self.game_tile_height + 24
+        )
+    
+    def get_turret_coordinates(self):
+        x1, y1, x2, y2 = self.TURRET_COORDINATES[self.direction]
+        return (
+            self.x * self.game_tile_width + x1,
+            self.y * self.game_tile_height + y1,
+            self.x * self.game_tile_width + x2,
+            self.y * self.game_tile_height + y2,
+        )
         
     def destruct(self):
         """
@@ -70,22 +88,17 @@ class Tank:
         """
         Update canvas object of tank.
         """
+        
         if self.cv != None:
             self.cv.coords(
                 self.body,
-                self.x * config.TILE_WIDTH + 8,
-                self.y * config.TILE_HEIGHT + 8,
-                self.x * config.TILE_WIDTH + 24,
-                self.y * config.TILE_HEIGHT + 24,
+                *self.get_body_coordinates()
             )
             
             x1, y1, x2, y2 = self.TURRET_COORDINATES[self.direction]
             self.cv.coords(
                 self.turret,
-                self.x * config.TILE_WIDTH + x1,
-                self.y * config.TILE_HEIGHT + y1,
-                self.x * config.TILE_WIDTH + x2,
-                self.y * config.TILE_HEIGHT + y2,
+                *self.get_turret_coordinates()
             )
         
     def get_perception(self):
@@ -109,7 +122,7 @@ class Tank:
         Move one tile to right (east). Does not move if it hits wall.
         """
         self.turn_right(update=False)
-        if self.x < config.COL_COUNT - 1:
+        if self.x < self.game_col_count - 1:
             self.x += 1
         self.update()
         
@@ -127,7 +140,7 @@ class Tank:
         Move one tile to down (south). Does not move if it hits wall.
         """
         self.turn_down(update=False)
-        if self.y < config.ROW_COUNT - 1:
+        if self.y < self.game_row_count - 1:
             self.y += 1
         self.update()
         
@@ -137,7 +150,7 @@ class Tank:
         """
         self.turn_left(update=False)
         self.update()
-        return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT, self.team_id, color=self.color)
+        return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT, self.team_id, color=self.color, game_config=self.game_config)
             
     def shoot_right(self):
         """
@@ -145,7 +158,7 @@ class Tank:
         """
         self.turn_right(update=False)
         self.update()
-        return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT, self.team_id, color=self.color)
+        return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT, self.team_id, color=self.color, game_config=self.game_config)
         
     def shoot_up(self):
         """
@@ -153,7 +166,7 @@ class Tank:
         """
         self.turn_up(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y - 1, Direction.UP, self.team_id, color=self.color)
+        return Bullet(self.cv, self.x, self.y - 1, Direction.UP, self.team_id, color=self.color, game_config=self.game_config)
         
     def shoot_down(self):
         """
@@ -161,7 +174,7 @@ class Tank:
         """
         self.turn_down(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN, self.team_id, color=self.color)
+        return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN, self.team_id, color=self.color, game_config=self.game_config)
     
     # Turn method (helper)
     def turn_left(self, update=True):
