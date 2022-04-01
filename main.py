@@ -23,7 +23,7 @@ app.run()
 """
 
 try:
-    AppFactory("game_config.yaml")
+    AppFactory("game_config.yaml").create()
         
 except FileNotFoundError:
     print("Error: \"{}\" is not found.".format(filename))
