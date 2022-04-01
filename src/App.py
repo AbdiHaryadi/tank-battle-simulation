@@ -19,40 +19,65 @@ class App(tkinter.Tk):
     BG_COLOR_1 = "#d0e19c"
     BG_COLOR_2 = "#b5d55e"
 
-    def __init__(self, mode="1v1"):
+    def __init__(self, mode="1v1", game_config=None):
         super().__init__()
         self.title("AI Simulation")
-        self.canvas = tkinter.Canvas(
-            self, # the window itself
-            width=config.WIDTH,
-            height=config.HEIGHT
-        )
-        self.canvas.pack() # make the window fit to canvas
+        self.game_config = game_config
         self.tanks = []
         self.bullets = []
         self.frame = 0
         self.mode = mode
         
+        """
+        self.game_config = game_config
+        
+        self.window_width: 640
+        self.window_height: 480
+        self.row_count: 15
+        col_count: 20
+        frame_rate: 20
+        delay_before_start: 3
+        """
+        
     def run(self):
+        window_width = self.game_config.window_width
+        window_height = self.game_config.window_height
+    
+        self.canvas = tkinter.Canvas(
+            self,
+            width=window_width,
+            height=window_height
+        )
+        self.canvas.pack() # make the window fit to canvas
+    
         # Create a checkerboard background
         self.canvas.create_rectangle(
             0, 0,                          # from top-left coordinate
-            config.WIDTH, config.HEIGHT,   # to bottom-right coordinate
+            window_width, window_height,   # to bottom-right coordinate
             fill=self.BG_COLOR_1,
             width=0                        # no border
         )
         
-        for r in range(config.ROW_COUNT):
-            for c in range(config.COL_COUNT):
+        row_count = self.game_config.row_count
+        col_count = self.game_config.col_count
+        
+        tile_width = window_width / col_count
+        tile_height = window_height / row_count
+        
+        for r in range(row_count):
+            for c in range(col_count):
                 if (r + c) % 2 == 0:
                     self.canvas.create_rectangle(
-                        c * config.TILE_WIDTH,
-                        r * config.TILE_HEIGHT,
-                        (c + 1) * config.TILE_WIDTH,
-                        (r + 1) * config.TILE_HEIGHT,
+                        c * tile_width,
+                        r * tile_height,
+                        (c + 1) * tile_width,
+                        (r + 1) * tile_height,
                         fill=self.BG_COLOR_2,
                         width=0
                     )
+                    
+        input("So far so good.")
+        raise
 
         """
         # Create random tanks
@@ -72,17 +97,17 @@ class App(tkinter.Tk):
         if self.mode == "1v1":
             #######
             # Put your bot here!
-            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=MyTankBot())
+            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
             t2 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
             self.tanks = [t1, t2]
             #######
         elif self.mode == "3v3":
-            tr1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
-            tr2 = Tank(self.canvas, (255, 127, 0), 0, (config.ROW_COUNT - 1) // 2, "RED TEAM", bot=SimpleTankBot())
-            tr3 = Tank(self.canvas, (255, 0, 127), 0, config.ROW_COUNT - 1, "RED TEAM", bot=SimpleTankBot())
-            tb1 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 1, 0, "BLUE TEAM", bot=SimpleTankBot())
-            tb2 = Tank(self.canvas, (0, 127, 255), config.COL_COUNT - 1, (config.ROW_COUNT - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
-            tb3 = Tank(self.canvas, (63, 127, 255), config.COL_COUNT - 1, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
+            tr1 = Tank(self.canvas, (255, 0, 0), 1, 0, "RED TEAM", bot=SimpleTankBot())
+            tr2 = Tank(self.canvas, (255, 127, 0), 1, (config.ROW_COUNT - 1) // 2, "RED TEAM", bot=SimpleTankBot())
+            tr3 = Tank(self.canvas, (255, 0, 127), 1, config.ROW_COUNT - 1, "RED TEAM", bot=SimpleTankBot())
+            tb1 = Tank(self.canvas, (0, 0, 255), config.COL_COUNT - 2, 0, "BLUE TEAM", bot=SimpleTankBot())
+            tb2 = Tank(self.canvas, (0, 127, 255), config.COL_COUNT - 2, (config.ROW_COUNT - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
+            tb3 = Tank(self.canvas, (63, 127, 255), config.COL_COUNT - 2, config.ROW_COUNT - 1, "BLUE TEAM", bot=SimpleTankBot())
             self.tanks = [tr1, tr2, tr3, tb1, tb2, tb3]
         else:
             raise ValueError("Mode not supported: {}".format(self.mode))
