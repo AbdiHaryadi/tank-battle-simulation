@@ -4,26 +4,26 @@ class Direction(Enum):
     """
     Enumeration type of direction.
     """
-    LEFT = auto()
-    RIGHT = auto()
-    UP = auto()
-    DOWN = auto()
+    WEST = auto()
+    EAST = auto()
+    NORTH = auto()
+    SOUTH = auto()
     
     def inverse(self):
         """
         Return inverse of the direction.
         """
-        if self is Direction.LEFT:
-            return Direction.RIGHT
+        if self is Direction.WEST:
+            return Direction.EAST
             
-        elif self is Direction.RIGHT:
-            return Direction.LEFT
+        elif self is Direction.EAST:
+            return Direction.WEST
             
-        elif self is Direction.UP:
-            return Direction.DOWN
+        elif self is Direction.NORTH:
+            return Direction.SOUTH
             
-        elif self is Direction.DOWN:
-            return Direction.UP
+        elif self is Direction.SOUTH:
+            return Direction.NORTH
             
     def norm_vector(self):
         """
@@ -31,14 +31,14 @@ class Direction(Enum):
         Positive-x goes right and positive-y goes down.
         """
         # Return normal vector relative to the coordinate of window
-        if self is Direction.LEFT:
+        if self is Direction.WEST:
             return (-1, 0)
             
-        elif self is Direction.RIGHT:
+        elif self is Direction.EAST:
             return (1, 0)
             
-        elif self is Direction.UP:
+        elif self is Direction.NORTH:
             return (0, -1)
             
-        elif self is Direction.DOWN:
+        elif self is Direction.SOUTH:
             return (0, 1)

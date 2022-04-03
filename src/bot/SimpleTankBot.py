@@ -1,7 +1,7 @@
 import random
 
 from src.bot.TankBot import TankBot
-from src.enum.Action import Action
+from src.enum.BotAction import BotAction
 from src.enum.Direction import Direction
 
 class SimpleTankBot(TankBot):
@@ -23,22 +23,22 @@ class SimpleTankBot(TankBot):
         while i < len(gp.bullets) and action == None:
             curr_bullet = gp.bullets[i]
             if curr_bullet.team_id != gp.player_tank.team_id:
-                if curr_bullet.direction in [Direction.LEFT, Direction.RIGHT]:
+                if curr_bullet.direction in [Direction.WEST, Direction.EAST]:
                     # Case: bullet approaching tank one or two tile horizontally
                     if abs(curr_bullet.x - gp.player_tank.x) <= 2:
                         if curr_bullet.y == gp.player_tank.y:
-                            if (curr_bullet.x > gp.player_tank.x) == (curr_bullet.direction == Direction.LEFT):
+                            if (curr_bullet.x > gp.player_tank.x) == (curr_bullet.direction == Direction.WEST):
                                 # Move vertically
-                                v_move_actions = [Action.MOVE_UP, Action.MOVE_DOWN]
+                                v_move_actions = [BotAction.MOVE_NORTH, BotAction.MOVE_SOUTH]
                                 action = random.choice(v_move_actions)
                             
                 else:
                     # Case: bullet approaching tank one or two tile vertically
                     if abs(curr_bullet.y - gp.player_tank.y) <= 2:
                         if curr_bullet.x == gp.player_tank.x:
-                            if (curr_bullet.y > gp.player_tank.y) == (curr_bullet.direction == Direction.UP):
+                            if (curr_bullet.y > gp.player_tank.y) == (curr_bullet.direction == Direction.NORTH):
                                 # Move horizontally
-                                h_move_actions = [Action.MOVE_LEFT, Action.MOVE_RIGHT]
+                                h_move_actions = [BotAction.MOVE_WEST, BotAction.MOVE_EAST]
                                 action = random.choice(h_move_actions)
                 
             i += 1
@@ -48,6 +48,6 @@ class SimpleTankBot(TankBot):
         
         else:
             if gp.frame % 4 == 0:
-                return random.choice(list(Action))
+                return random.choice(list(BotAction))
             else:
-                return Action.DO_NOTHING
+                return BotAction.DO_NOTHING

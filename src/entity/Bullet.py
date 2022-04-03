@@ -31,14 +31,14 @@ class Bullet:
             self.bullet = None
             
     def get_bullet_coordinates(self):
-        if (self.direction is Direction.LEFT) or (self.direction is Direction.RIGHT):
+        if (self.direction is Direction.WEST) or (self.direction is Direction.EAST):
             return (
                 self.x * self.game_tile_width + 8,
                 self.y * self.game_tile_height + 15,
                 self.x * self.game_tile_width + 24,
                 self.y * self.game_tile_height + 17
             )
-        elif (self.direction is Direction.UP) or (self.direction is Direction.DOWN):
+        elif (self.direction is Direction.NORTH) or (self.direction is Direction.SOUTH):
             return (
                 self.x * self.game_tile_width + 15,
                 self.y * self.game_tile_height + 8,

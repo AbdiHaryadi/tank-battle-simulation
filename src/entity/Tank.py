@@ -1,5 +1,7 @@
 from src.bot.SimpleTankBot import SimpleTankBot
+from src.command import *
 from src.entity.Bullet import Bullet
+from src.enum.BotAction import BotAction
 from src.enum.Direction import Direction
 from src.perception.TankPerception import TankPerception
 from src.utility import color_hex, to_half_dark
@@ -9,10 +11,10 @@ class Tank:
     Class for tank.
     """
     TURRET_COORDINATES = {
-        Direction.LEFT: (4, 12, 16, 20),
-        Direction.RIGHT: (16, 12, 28, 20),
-        Direction.UP: (12, 4, 20, 16),
-        Direction.DOWN: (12, 16, 20, 28)
+        Direction.WEST: (4, 12, 16, 20),
+        Direction.EAST: (16, 12, 28, 20),
+        Direction.NORTH: (12, 4, 20, 16),
+        Direction.SOUTH: (12, 16, 20, 28)
     }
 
     def __init__(self, cv, color, x, y, team_id, bot=None,
@@ -27,7 +29,7 @@ class Tank:
         else:
             self.bot = bot
             
-        self.direction = Direction.RIGHT
+        self.direction = Direction.EAST
         self.game_config = game_config
         
         self.game_row_count = game_config["row_count"]
@@ -78,11 +80,42 @@ class Tank:
             self.cv.delete(self.body)
             self.cv.delete(self.turret)
     
+    
     def get_action(self, game_perception):
         """
+        [Deprecated]
         Get action from bot.
         """
+        raise
         return self.bot.get_action(game_perception)
+        
+    def get_command(self, game_perception, response={}):
+        """
+        Get command from bot.
+        """
+        action = self.bot.get_action(game_perception)
+        if action is BotAction.MOVE_WEST:
+            command = MoveWestCommand(self, game_perception, response)
+        elif action is BotAction.MOVE_EAST:
+            command = MoveEastCommand(self, game_perception, response)
+        elif action is BotAction.MOVE_NORTH:
+            command = MoveNorthCommand(self, game_perception, response)
+        elif action is BotAction.MOVE_SOUTH:
+            command = MoveSouthCommand(self, game_perception, response)
+        elif action is BotAction.SHOOT_WEST:
+            command = ShootWestCommand(self, game_perception, response)
+        elif action is BotAction.SHOOT_EAST:
+            command = ShootEastCommand(self, game_perception, response)
+        elif action is BotAction.SHOOT_NORTH:
+            command = ShootNorthCommand(self, game_perception, response)
+        elif action is BotAction.SHOOT_SOUTH:
+            command = ShootSouthCommand(self, game_perception, response)
+        elif action is BotAction.DO_NOTHING:
+            command = DoNothingCommand(self, game_perception, response)
+        else:
+            raise ValueError("Unknown action: {}".format(action))
+            
+        return command
                 
     def update(self):
         """
@@ -108,103 +141,103 @@ class Tank:
         return TankPerception(self)
     
     # Move method
-    def move_left(self):
+    def move_west(self):
         """
         Move one tile to left (west). Does not move if it hits wall.
         """
-        self.turn_left(update=False)
+        self.turn_west(update=False)
         if self.x > 0:
             self.x -= 1
         self.update()
         
-    def move_right(self):
+    def move_east(self):
         """
         Move one tile to right (east). Does not move if it hits wall.
         """
-        self.turn_right(update=False)
+        self.turn_east(update=False)
         if self.x < self.game_col_count - 1:
             self.x += 1
         self.update()
         
-    def move_up(self):
+    def move_north(self):
         """
         Move one tile to up (north). Does not move if it hits wall.
         """
-        self.turn_up(update=False)
+        self.turn_north(update=False)
         if self.y > 0:
             self.y -= 1
         self.update()
         
-    def move_down(self):
+    def move_south(self):
         """
         Move one tile to down (south). Does not move if it hits wall.
         """
-        self.turn_down(update=False)
+        self.turn_south(update=False)
         if self.y < self.game_row_count - 1:
             self.y += 1
         self.update()
         
-    def shoot_left(self):
+    def shoot_west(self):
         """
         Spawn and return one bullet to left (west) direction.
         """
-        self.turn_left(update=False)
+        self.turn_west(update=False)
         self.update()
-        return Bullet(self.cv, self.x - 1, self.y, Direction.LEFT, self.team_id, color=self.color, game_config=self.game_config)
+        return Bullet(self.cv, self.x - 1, self.y, Direction.WEST, self.team_id, color=self.color, game_config=self.game_config)
             
-    def shoot_right(self):
+    def shoot_east(self):
         """
         Spawn and return one bullet to right (east) direction.
         """
-        self.turn_right(update=False)
+        self.turn_east(update=False)
         self.update()
-        return Bullet(self.cv, self.x + 1, self.y, Direction.RIGHT, self.team_id, color=self.color, game_config=self.game_config)
+        return Bullet(self.cv, self.x + 1, self.y, Direction.EAST, self.team_id, color=self.color, game_config=self.game_config)
         
-    def shoot_up(self):
+    def shoot_north(self):
         """
         Spawn and return one bullet to up (north) direction.
         """
-        self.turn_up(update=False)
+        self.turn_north(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y - 1, Direction.UP, self.team_id, color=self.color, game_config=self.game_config)
+        return Bullet(self.cv, self.x, self.y - 1, Direction.NORTH, self.team_id, color=self.color, game_config=self.game_config)
         
-    def shoot_down(self):
+    def shoot_south(self):
         """
         Spawn and return one bullet to down (south) direction.
         """
-        self.turn_down(update=False)
+        self.turn_south(update=False)
         self.update()
-        return Bullet(self.cv, self.x, self.y + 1, Direction.DOWN, self.team_id, color=self.color, game_config=self.game_config)
+        return Bullet(self.cv, self.x, self.y + 1, Direction.SOUTH, self.team_id, color=self.color, game_config=self.game_config)
     
     # Turn method (helper)
-    def turn_left(self, update=True):
+    def turn_west(self, update=True):
         """
         Visually turn tank to left (west).
         """
-        self.direction = Direction.LEFT
+        self.direction = Direction.WEST
         if update:
             self.update()
     
-    def turn_right(self, update=True):
+    def turn_east(self, update=True):
         """
         Visually turn tank to right (east).
         """
-        self.direction = Direction.RIGHT
+        self.direction = Direction.EAST
         if update:
             self.update()
         
-    def turn_up(self, update=True):
+    def turn_north(self, update=True):
         """
         Visually turn tank to up (north).
         """
-        self.direction = Direction.UP
+        self.direction = Direction.NORTH
         if update:
             self.update()
         
-    def turn_down(self, update=True):
+    def turn_south(self, update=True):
         """
-        Visually turn tank to down (south).
+        Visually turn tank to south (south).
         """
-        self.direction = Direction.DOWN
+        self.direction = Direction.SOUTH
         if update:
             self.update()

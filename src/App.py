@@ -3,12 +3,12 @@ import random
 from math import exp
 
 from src.bot.SimpleTankBot import SimpleTankBot
-from src.bot.MyTankBot import MyTankBot
 from src.entity.Bullet import Bullet
 from src.entity.Tank import Tank
-from src.enum.Action import Action
 from src.enum.Direction import Direction
 from src.perception.GamePerception import GamePerception
+
+from src.command import MoveWestCommand
 
 class App(tkinter.Tk):
     """
@@ -129,44 +129,19 @@ class App(tkinter.Tk):
         same_pos = lambda x1, y1, x2, y2: x1 == x2 and y1 == y2
         for t in self.tanks:
             # Get action; dictionaries are used so action cannot change the state of tanks and bullets
-            action = t.get_action(GamePerception(
+            gp = GamePerception(
                 row_count,
                 col_count,
                 self.frame,
                 t,
                 self.bullets,
                 [t2 for t2 in self.tanks if t2 != t] # other tanks
-            ))
+            )
+            response = {}
+            command = t.get_command(gp, response).execute()
             
-            if action is Action.MOVE_LEFT:
-                if not any(map(lambda t2: same_pos(t.x - 1, t.y, t2.x, t2.y) and t2 != t, self.tanks)):
-                    t.move_left()
-            elif action is Action.MOVE_RIGHT:
-                if not any(map(lambda t2: same_pos(t.x + 1, t.y, t2.x, t2.y) and t2 != t, self.tanks)):
-                    t.move_right()
-            elif action is Action.MOVE_UP:
-                if not any(map(lambda t2: same_pos(t.x, t.y - 1, t2.x, t2.y) and t2 != t, self.tanks)):
-                    t.move_up()
-            elif action is Action.MOVE_DOWN:
-                if not any(map(lambda t2: same_pos(t.x, t.y + 1, t2.x, t2.y) and t2 != t, self.tanks)):
-                    t.move_down()
-            elif action is Action.SHOOT_LEFT:
-                bullet = t.shoot_left()
-                new_bullets.append(bullet)
-            elif action is Action.SHOOT_RIGHT:
-                bullet = t.shoot_right()
-                new_bullets.append(bullet)
-            elif action is Action.SHOOT_UP:
-                bullet = t.shoot_up()
-                new_bullets.append(bullet)
-            elif action is Action.SHOOT_DOWN:
-                bullet = t.shoot_down()
-                new_bullets.append(bullet)
-            elif action is Action.DO_NOTHING:
-                pass # do nothing
-            else:
-                print("Unknown action: {}".format(action))
-            # else: no action
+            if "bullets" in response:
+                new_bullets += response["bullets"]
         
         removed_bullets = []
         
@@ -236,16 +211,16 @@ class App(tkinter.Tk):
                 bullet_added = False
                 while not bullet_added:
                     direction = random.choice(list(Direction))
-                    if direction == Direction.LEFT:
+                    if direction == Direction.WEST:
                         x = col_count - 1
                         y = random.randrange(0, row_count)
-                    elif direction == Direction.RIGHT:
+                    elif direction == Direction.EAST:
                         x = 0
                         y = random.randrange(0, row_count)
-                    elif direction == Direction.UP:
+                    elif direction == Direction.NORTH:
                         x = random.randrange(0, col_count)
                         y = row_count - 1
-                    elif direction == Direction.DOWN:
+                    elif direction == Direction.SOUTH:
                         x = random.randrange(0, col_count)
                         y = 0
                     else:
