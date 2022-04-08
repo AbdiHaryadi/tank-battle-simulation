@@ -24,7 +24,7 @@ class GameConfigLoader:
             for team in self.data["teams"]:
                 # TODO: handle error for tanks and bot_path attribute
                 for tank in team["tanks"]:
-                    tank |= BotLoader.load(tank["bot_path"])
+                    tank |= BotLoader(tank["bot_path"]).load()
                     
     def convert_frame_rate_to_int(self):
         if "frame_rate" in self.data:
@@ -33,5 +33,5 @@ class GameConfigLoader:
             self.throw_attribute_not_found("frame_rate")
             
     def throw_attribute_not_found(self, attribute):
-        raise ValueError("{}: Error: No \"{}\" attribute detected.".format(self.path, attribute))
+        raise ValueError("{}: Error: Missing \"{}\" value.".format(self.path, attribute))
             
