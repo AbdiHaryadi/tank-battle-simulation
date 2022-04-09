@@ -21,7 +21,7 @@ py main.py
 ## Now what?
 To make it more interesting, try to implement your own bot! 
 
-Implement it by create a new YAML document. This is the template:
+Implement it by create a new YAML document. You can check some examples in `examples/bots`. This is the template:
 ```
 first_action: <first-action-name>
 
