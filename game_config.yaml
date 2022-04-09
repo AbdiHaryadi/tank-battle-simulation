@@ -5,8 +5,6 @@ col_count: 20
 frame_rate: 8
 delay_before_start: 3
 
-### TODO: ambil solo
-
 teams:
     -   name: "Red Team"
         tanks:

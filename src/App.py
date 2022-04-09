@@ -63,21 +63,6 @@ class App(tkinter.Tk):
                         fill=self.BG_COLOR_2,
                         width=0
                     )
-
-        """
-        # Create random tanks
-        while len(self.tanks) < 2:
-            x = random.randrange(0, col_count)
-            y = random.randrange(0, row_count)
-            if not any(map(lambda t: t.x == x and t.y == y, self.tanks)):
-                random_color = (
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                    random.randint(0, 255)
-                )
-                new_tank = Tank(self.canvas, random_color, x, y)
-                self.tanks.append(new_tank)
-        """
         
         # For teams first, self.mode is ignored right now
         for team in self.game_config["teams"]:
@@ -87,33 +72,9 @@ class App(tkinter.Tk):
                     tank["color"],
                     *tank["initial_position"][::-1],
                     team["name"],
-                    #bot=SimpleTankBot(), # Test
                     bot=FiniteStateTankBot(tank),
                     game_config=self.game_config
                 ))
-                
-        #input("So far so good.")
-        #raise
-        
-        """
-        if self.mode == "1v1":
-            #######
-            # Put your bot here!
-            t1 = Tank(self.canvas, (255, 0, 0), 0, 0, "RED TEAM", bot=SimpleTankBot())
-            t2 = Tank(self.canvas, (0, 0, 255), col_count - 1, row_count - 1, "BLUE TEAM", bot=SimpleTankBot())
-            self.tanks = [t1, t2]
-            #######
-        elif self.mode == "3v3":
-            tr1 = Tank(self.canvas, (255, 0, 0), 1, 0, "RED TEAM", bot=SimpleTankBot())
-            tr2 = Tank(self.canvas, (255, 127, 0), 1, (row_count - 1) // 2, "RED TEAM", bot=SimpleTankBot())
-            tr3 = Tank(self.canvas, (255, 0, 127), 1, row_count - 1, "RED TEAM", bot=SimpleTankBot())
-            tb1 = Tank(self.canvas, (0, 0, 255), col_count - 2, 0, "BLUE TEAM", bot=SimpleTankBot())
-            tb2 = Tank(self.canvas, (0, 127, 255), col_count - 2, (row_count - 1) // 2, "BLUE TEAM", bot=SimpleTankBot())
-            tb3 = Tank(self.canvas, (63, 127, 255), col_count - 2, row_count - 1, "BLUE TEAM", bot=SimpleTankBot())
-            self.tanks = [tr1, tr2, tr3, tb1, tb2, tb3]
-        else:
-            raise ValueError("Mode not supported: {}".format(self.mode))
-        """
 
         self.after(self.game_config["delay_before_start"] * 1000, self.update)
         self.mainloop()
