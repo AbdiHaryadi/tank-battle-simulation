@@ -1,6 +1,5 @@
 import yaml
 from src.BotLoader import BotLoader
-from src.GameConfig import GameConfig
 
 class GameConfigLoader:
     def __init__(self, path):
