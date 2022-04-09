@@ -2,7 +2,7 @@ window_width: 640
 window_height: 480
 row_count: 15
 col_count: 20
-frame_rate: 40
+frame_rate: 8
 delay_before_start: 3
 
 ### TODO: ambil solo
@@ -11,27 +11,27 @@ teams:
     -   name: "Red Team"
         tanks:
             -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [1, 2]
+                initial_position: [0, 0]
                 color: [255, 0, 0]
                 
-            -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [2, 3]
+            -   bot_path: "examples/bots/defender.yaml"
+                initial_position: [1, 1]
                 color: [205, 0, 0]
                 
-            -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [3, 4]
+            -   bot_path: "examples/bots/defender.yaml"
+                initial_position: [2, 2]
                 color: [155, 0, 0]
                 
     -   name: "Blue Team"
         tanks:
             -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [5, 2]
+                initial_position: [14, 19]
                 color: [0, 0, 255]
                 
-            -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [6, 3]
+            -   bot_path: "examples/bots/attacker.yaml"
+                initial_position: [13, 18]
                 color: [0, 0, 205]
                 
-            -   bot_path: "examples/bots/guard.yaml"
-                initial_position: [7, 4]
+            -   bot_path: "examples/bots/attacker.yaml"
+                initial_position: [12, 17]
                 color: [0, 0, 155]

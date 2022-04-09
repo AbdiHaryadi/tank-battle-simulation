@@ -2,7 +2,7 @@ import tkinter
 import random
 from math import exp
 
-from src.bot.SimpleTankBot import SimpleTankBot
+from src.bot import SimpleTankBot, FiniteStateTankBot
 from src.entity.Bullet import Bullet
 from src.entity.Tank import Tank
 from src.enum.Direction import Direction
@@ -85,9 +85,10 @@ class App(tkinter.Tk):
                 self.tanks.append(Tank(
                     self.canvas,
                     tank["color"],
-                    *tank["initial_position"],
+                    *tank["initial_position"][::-1],
                     team["name"],
-                    bot=SimpleTankBot(), # Test
+                    #bot=SimpleTankBot(), # Test
+                    bot=FiniteStateTankBot(tank),
                     game_config=self.game_config
                 ))
                 

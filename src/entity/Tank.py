@@ -79,15 +79,6 @@ class Tank:
         if self.cv != None:
             self.cv.delete(self.body)
             self.cv.delete(self.turret)
-    
-    
-    def get_action(self, game_perception):
-        """
-        [Deprecated]
-        Get action from bot.
-        """
-        raise
-        return self.bot.get_action(game_perception)
         
     def get_command(self, game_perception, response={}):
         """

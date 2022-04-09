@@ -50,6 +50,7 @@ actions:
             - "shoot east"
             - "shoot east"
             - "shoot east"
+            - "wait"
             
         transitions:
             -   condition: "no enemy on east"
@@ -60,6 +61,7 @@ actions:
             - "shoot south"
             - "shoot south"
             - "shoot south"
+            - "wait"
             
         transitions:
             -   condition: "no enemy on south"
@@ -70,6 +72,7 @@ actions:
             - "shoot west"
             - "shoot west"
             - "shoot west"
+            - "wait"
             
         transitions:
             -   condition: "no enemy on west"
@@ -80,7 +83,9 @@ actions:
             - "shoot north"
             - "shoot north"
             - "shoot north"
+            - "wait"
             
         transitions:
             -   condition: "no enemy on north"
                 next_action: move_north
+                

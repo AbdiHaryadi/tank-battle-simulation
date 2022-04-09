@@ -1,2 +1,61 @@
-init:
-    - 
+first_action: watch
+
+actions:
+    watch:
+        transitions:
+            -   condition: "enemy on north"
+                next_action: move_west
+                
+            -   condition: "enemy on east"
+                next_action: move_north
+                
+            -   condition: "enemy on south"
+                next_action: move_east
+                
+            -   condition: "enemy on west"
+                next_action: move_south
+                
+            -   condition: "any"
+                next_action: camp
+                
+    camp:
+        commands:
+            - "wait"
+            
+        transitions:
+            -   condition: "any"
+                next_action: watch
+                
+    move_east:
+        commands:
+            - "move east"
+            
+        transitions:
+            -   condition: "any"
+                next_action: watch
+            
+    move_south:
+        commands:
+            - "move south"
+            
+        transitions:
+            -   condition: "any"
+                next_action: watch
+
+    move_west:
+        commands:
+            - "move west"
+        
+        transitions:
+            -   condition: "any"
+                next_action: watch
+            
+    move_north:
+        commands:
+            - "move north"
+        
+        transitions:
+            -   condition: "any"
+                next_action: watch
+                
+    

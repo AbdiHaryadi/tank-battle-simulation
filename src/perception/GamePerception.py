@@ -92,3 +92,6 @@ class GamePerception:
                     
             print("#") # with newline
         print("#" * (self.col_count + 2))
+        
+    def get_enemies(self):
+        return [tank for tank in self.other_tanks if tank.team_id != self.player_tank.team_id]

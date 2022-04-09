@@ -1,0 +1,141 @@
+first_action: watch
+
+actions:
+    watch:
+        transitions:
+            -   condition: "enemy on north"
+                next_action: shoot_north
+                
+            -   condition: "enemy on south"
+                next_action: shoot_south
+                
+            -   condition: "enemy on east"
+                next_action: shoot_east
+                
+            -   condition: "enemy on west"
+                next_action: shoot_west
+                
+            -   condition: "any"
+                next_action: camp
+                
+    camp:
+        commands:
+            - "wait"
+            
+        transitions:
+            -   condition: "any"
+                next_action: watch
+                
+    shoot_east:
+        commands:
+            - "shoot east"
+            
+        transitions:
+            -   condition: "no enemy on east"
+                next_action: move_east_and_watch
+                
+    move_east_and_watch:
+        commands:
+            - "move east"
+            
+        transitions:
+            -   condition: "enemy on north"
+                next_action: shoot_north
+                
+            -   condition: "enemy on south"
+                next_action: shoot_south
+                
+            -   condition: "enemy on east"
+                next_action: shoot_east
+                
+            -   condition: "enemy on west"
+                next_action: shoot_west
+                
+            -   condition: "wall on east"
+                next_action: move_west_and_watch
+                
+    shoot_west:
+        commands:
+            - "shoot west"
+            
+        transitions:
+            -   condition: "no enemy on west"
+                next_action: move_west_and_watch
+                
+    move_west_and_watch:
+        commands:
+            - "move west"
+            
+        transitions:
+            -   condition: "enemy on north"
+                next_action: shoot_north
+                
+            -   condition: "enemy on south"
+                next_action: shoot_south
+                
+            -   condition: "enemy on east"
+                next_action: shoot_east
+                
+            -   condition: "enemy on west"
+                next_action: shoot_west
+                
+            -   condition: "wall on west"
+                next_action: move_east_and_watch
+                
+    shoot_north:
+        commands:
+            - "shoot north"
+            
+        transitions:
+            -   condition: "no enemy on north"
+                next_action: move_north_and_watch
+                
+    move_north_and_watch:
+        commands:
+            - "move north"
+            
+        transitions:
+            -   condition: "enemy on north"
+                next_action: shoot_north
+                
+            -   condition: "enemy on south"
+                next_action: shoot_south
+                
+            -   condition: "enemy on east"
+                next_action: shoot_east
+                
+            -   condition: "enemy on west"
+                next_action: shoot_west
+                
+            -   condition: "wall on north"
+                next_action: move_south_and_watch
+                
+    shoot_south:
+        commands:
+            - "shoot south"
+            
+        transitions:
+            -   condition: "no enemy on south"
+                next_action: move_south_and_watch
+                
+    move_south_and_watch:
+        commands:
+            - "move south"
+            
+        transitions:
+            -   condition: "enemy on north"
+                next_action: shoot_north
+                
+            -   condition: "enemy on south"
+                next_action: shoot_south
+                
+            -   condition: "enemy on east"
+                next_action: shoot_east
+                
+            -   condition: "enemy on west"
+                next_action: shoot_west
+                
+            -   condition: "wall on south"
+                next_action: move_north_and_watch
+                
+    
